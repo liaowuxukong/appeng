@@ -1,0 +1,8 @@
+---
+applications:
+- name: gettime
+  memory: 256M
+  instances: 1
+  host: gettime
+  domain: dc.escience.cn
+  path: .

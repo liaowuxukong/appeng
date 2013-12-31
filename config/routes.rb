@@ -1,11 +1,8 @@
 Appeng::Application.routes.draw do
 
-
-  get "apps/new"
+  resources :apps
 
   root to: 'static_pages#home'
-
-  match '/pushapp', to: 'apps#new'
   
   match '/help', to: 'static_pages#help'
 

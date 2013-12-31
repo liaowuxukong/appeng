@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131230025122) do
+ActiveRecord::Schema.define(:version => 20131230060128) do
 
   create_table "apps", :force => true do |t|
     t.string   "path"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(:version => 20131230025122) do
     t.string   "domain"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+    t.string   "status"
   end
 
   add_index "apps", ["domain"], :name => "index_apps_on_domain", :unique => true

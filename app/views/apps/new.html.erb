@@ -1,3 +1,26 @@
 <% provide(:title,'Push App') %>
 <h1>Push App</h1>
-<p>Find me in app/views/apps/new.html.erb</p>
+
+<div class="row">
+<div class="span6 offset3">
+  <%= form_for(@app) do |f| %>
+    <%= render 'shared/error_messages' %>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+
+    <%= f.label :instance %>
+    <%= f.text_field :instance %>
+
+    <%= f.label :memory_limit %>
+    <%= f.text_field :memory_limit %>
+
+    <%= f.label :domain%>
+    <%= f.text_field :domain %>
+
+    <%= f.file_field :path %>
+
+    <%= f.submit "create new app", class:"btn btn-large btn-primary" %>
+
+  <% end %>
+</div>
+</div>
