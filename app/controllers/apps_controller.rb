@@ -15,7 +15,8 @@ class AppsController < ApplicationController
     @app = App.new(params[:app])
 
     # 上传 && 上传cf
-    if push_app && @app.push
+    #if @app.save
+    if upload && @app.push #&& @app.save
       flash[:success] = "create app success!"
       redirect_to @app
     else
@@ -24,18 +25,16 @@ class AppsController < ApplicationController
   end
 
   private
-    def push_app
-      return true if upload
-      false
-    end
 
     def upload
+      require 'fileutils'
       uploadfile = @app[:path]
       unless uploadfile
         flash[:error] = "path is null"
         return false
       end
-      unzip_file(uploadfile)
+      return false unless unzip_file(uploadfile) && add_apibus_file(uploadfile)
+      true
     end
 
     def unzip_file(uploadfile)
@@ -66,7 +65,6 @@ class AppsController < ApplicationController
       puts "unzip_cmd = #{unzip_cmd}"
       puts "=="*10
 
-      require 'fileutils'
       FileUtils.cp uploadfile.path, filename
       system unzip_cmd 
       if $?.to_i == 0
@@ -76,6 +74,36 @@ class AppsController < ApplicationController
       false
     end
 
+    # 在本地解压完成的文件夹中，添加apibus和所有地址的文件
+    ## 判断目录下有没有lib文件夹，如果没有，建立lib文件夹
+    ## 生成apibus需要用的yaml文件
+    ## apibus文件和yaml文件移动到lib目录下
+    def add_apibus_file(uploadfile)
+      filename  = Rails.root.join('public', 'data', uploadfile.original_filename).to_s
+      filename = filename.split(".")[0]
+      libfold = filename+"/"+"lib"
+      unless  File.exist?(libfold)
+        Dir.mkdir(libfold)
+      end
 
+      yaml_file_path = libfold + "/service_map.yaml"
+      yaml_file_content = {}
+      App.all.each{ |app| yaml_file_content[app.name] = "http://"+app.domain.to_s }
+      if File.exist?(yaml_file_path)
+        File.delete(yaml_file_path)
+      end
+      File.open(yaml_file_path, 'w'){|f| YAML.dump(yaml_file_content, f)}
+      puts "make yaml file to "+yaml_file_path
+
+      apibus_file_source = Rails.root.join('lib','apibus.rb')
+      apibus_file_target = libfold + "/apibus.rb"
+      if File.exist?(apibus_file_target)
+        File.delete(apibus_file_target)
+      end
+      FileUtils.cp(apibus_file_source, apibus_file_target)
+      puts "make apibus file to "+apibus_file_target
+
+      true
+    end
 
 end
