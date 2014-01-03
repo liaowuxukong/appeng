@@ -11,7 +11,8 @@ module CF::App
     input :url, :desc => "Filter by url regexp"
     input :full, :desc => "Verbose output format", :default => false
     def apps
-      if space = input[:space]
+      #if space = input[:space]
+      if space = client.current_space
         begin
           space.summarize!
         rescue CFoundry::APIError
@@ -28,60 +29,34 @@ module CF::App
           end
       end
 
+      app_infos = []
+
       line unless quiet?
 
       if apps.empty? and !quiet?
-        line "No applications."
-        return
-      end
-
-      apps.reject! do |a|
-        !app_matches?(a, input)
+        #line "No applications."
+        return [true,app_infos]
       end
 
       apps = apps.sort_by(&:name)
 
-      if input[:full]
-        spaced(apps) do |a|
-          invoke :app, :app => a
+      apps.each do |app|
+        health = app.health
+        health = 
+          if app.debug_mode == "suspend" && health == "0%"
+            "suspended"
+          else
+            health.downcase
         end
-      elsif quiet?
-        apps.each do |a|
-          line a.name
-        end
-      else
-        display_apps_table(apps)
+        app_infos << { name: app.name,
+                       instances:app.total_instances,
+                       memory: human_mb(app.memory),
+                       status: health,
+                       urls: app.url }
+
       end
+      return [true,app_infos]
     end
 
-    def display_apps_table(apps)
-      table(
-        ["name", "status", "usage", "url"],
-        apps.collect { |a|
-          [ c(a.name, :name),
-            app_status(a),
-            "#{a.total_instances} x #{human_mb(a.memory)}",
-            if a.urls.empty?
-              d("none")
-            elsif a.urls.size == 1
-              a.url
-            else
-              "#{a.url}, ..."
-            end
-          ]
-        })
-    end
-
-    def app_matches?(a, options)
-      if name = options[:name]
-        return false if a.name !~ /#{name}/
-      end
-
-      if url = options[:url]
-        return false if a.urls.none? { |u| u =~ /#{url}/ }
-      end
-
-      true
-    end
   end
 end

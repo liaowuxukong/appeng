@@ -1,10 +1,27 @@
+libdir = File.expand_path(File.join(File.dirname(__FILE__), "../../lib"))
+
+mothershiplibdir = "#{libdir}/mothership/lib"
+$LOAD_PATH.unshift(mothershiplibdir) unless $LOAD_PATH.include?(mothershiplibdir)
+cfliddir = "#{libdir}/cf_lib/lib"
+$LOAD_PATH.unshift(cfliddir) unless $LOAD_PATH.include?(cfliddir)
+
+
+require "cf"
+require "cf/plugin"
+
+$stdout.sync = true
+
+CF::Plugin.load_all
+
+
 class AppsController < ApplicationController
   def new
     @app = App.new
   end
 
   def index
-    @apps = App.all
+    status,app_infos = CF::App::Apps.new.apps
+    @apps = app_infos
   end
 
   def show

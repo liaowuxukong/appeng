@@ -1,2 +1,39 @@
 <% provide(:title,'All Apps') %>
-<h1>All Apps</h1>
+
+<div class="row">
+  <aside class="span4">
+    <section>
+      <h1>
+        All Apps
+      </h1>
+    </section>
+  </aside>
+  <div class="span8">
+    <% unless @apps.empty? %>
+      <h3>Apps (<%= @apps.count %>)</h3>
+      <% @apps.each do |app| %>
+        <ol class="microposts">
+          <li>
+            <span><%=app[:name]%> </span>
+            <span >
+              <% if app[:status]=="running" %>
+                <font color="green">running</font>
+              <%elsif app[:status]=="stop"%>
+                <font color="red">stop</font>
+              <%else%>
+                <font color="#EA7500"><%=app[:status]%></font>
+              <%end%>
+            </span>
+            <br/>
+            <span class="timestamp">
+              usage: <%=app[:memory]%>*<%=app[:instances]%>
+            </span>
+            <div class="timestamp">
+              urls: <a href="http://<%=app[:urls]%>"><%=app[:urls]%></a>
+            <div>
+          </li>
+        </ol>
+      <% end %>
+    <% end %>
+  </div>
+</div>

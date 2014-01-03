@@ -256,7 +256,8 @@ EOS
     end
 
     def quiet?
-      input[:quiet]
+      #input[:quiet]
+      !$stdout.tty?
     end
 
     def force?
@@ -268,7 +269,8 @@ EOS
     end
 
     def color_enabled?
-      input[:color]
+      #input[:color]
+      false
     end
 
     def verbose?
@@ -415,7 +417,8 @@ EOS
 
       @@client = build_client(target, token)
 
-      @@client.trace = input[:trace]
+      #@@client.trace = input[:trace]
+      @@client.trace = false
 
       uri = URI.parse(target)
       @@client.log = File.expand_path("#{LOGS_DIR}/#{uri.host}.log")
@@ -434,8 +437,10 @@ EOS
 
     def build_client(target, token = nil)
       client = CFoundry::V2::Client.new(target, token)
-      client.http_proxy = input[:http_proxy] || ENV['HTTP_PROXY'] || ENV['http_proxy']
-      client.https_proxy = input[:https_proxy] || ENV['HTTPS_PROXY'] || ENV['https_proxy']
+      #client.http_proxy = input[:http_proxy] || ENV['HTTP_PROXY'] || ENV['http_proxy']
+      client.http_proxy = ENV['HTTP_PROXY'] || ENV['http_proxy']
+      #client.https_proxy = input[:https_proxy] || ENV['HTTPS_PROXY'] || ENV['https_proxy']
+      client.https_proxy = ENV['HTTPS_PROXY'] || ENV['https_proxy']
       client
     end
 
