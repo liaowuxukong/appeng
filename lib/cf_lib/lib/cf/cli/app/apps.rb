@@ -49,10 +49,10 @@ module CF::App
             health.downcase
         end
         app_infos << { name: app.name,
-                       instances:app.total_instances,
-                       memory: human_mb(app.memory),
+                       instance:app.total_instances,
+                       memory_limit: human_mb(app.memory).downcase,
                        status: health,
-                       urls: app.url }
+                       domain: app.url }
 
       end
       return [true,app_infos]

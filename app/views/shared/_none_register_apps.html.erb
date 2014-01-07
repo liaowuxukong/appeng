@@ -1,0 +1,24 @@
+<h3>UnRegister Apps (<%= @apps.count %>)</h3>
+<% @apps.each do |app| %>
+  <ol class="microposts">
+    <li>
+      <span><%=app[:name]%></span>
+      <span >
+        <% if app[:status]=="running" %>
+          <font color="green">running</font>
+        <%elsif app[:status]=="stop"%>
+          <font color="red">stop</font>
+        <%else%>
+          <font color="#EA7500"><%=app[:status]%></font>
+        <%end%>
+      </span>
+      <br/>
+      <span class="timestamp">
+        usage: <%=app[:memory_limit]%>*<%=app[:instance]%>
+      </span>
+      <div class="timestamp">
+        urls: <a href="http://<%=app[:domain]%>" target="_blank"><%=app[:domain]%></a>
+      <div>
+    </li>
+  </ol>
+<% end %>

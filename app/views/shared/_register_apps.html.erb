@@ -1,0 +1,24 @@
+<h3>Register Apps (<%= @register_apps.count %>)</h3>
+<% @register_apps.each do |app| %>
+  <ol class="microposts">
+    <li>
+      <span><%=link_to app[:name],app%></span>
+      <span >
+        <% if app[:status]=="running" %>
+          <font color="green">running</font>
+        <%elsif app[:status]=="stop"%>
+          <font color="red">stop</font>
+        <%else%>
+          <font color="#EA7500"><%=app[:status]%></font>
+        <%end%>
+      </span>
+      <br/>
+      <span class="timestamp">
+        usage: <%=app[:memory_limit]%>*<%=app[:instance]%>
+      </span>
+      <div class="timestamp">
+        urls: <a href="http://<%=app[:domain]%>" target="_blank"><%=app[:domain]%></a>
+      <div>
+    </li>
+  </ol>
+<% end %>

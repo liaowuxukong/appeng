@@ -27,8 +27,8 @@ $stdout.sync = true
 CF::Plugin.load_all
 
 class App < ActiveRecord::Base
-  attr_accessible :domain, :instance, :memory_limit, :name, :path
-  attr_protected :status
+  attr_accessible :domain, :instance, :memory_limit, :name, :path, :status
+
 
   validates :domain, presence: true, uniqueness: { case_sensitive: false }
   validates :instance, presence: true

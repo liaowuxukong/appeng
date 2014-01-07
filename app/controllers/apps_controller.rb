@@ -22,6 +22,17 @@ class AppsController < ApplicationController
   def index
     status,app_infos = CF::App::Apps.new.apps
     @apps = app_infos
+    apps_from_db = App.all
+    @register_apps = apps_from_db.dup
+    puts "=="*10
+    @register_apps.map do |app1|
+      status = @apps[@apps.index{|app2| app1.name == app2[:name]}][:status]
+      app1.status = status
+    end
+    puts @register_apps.inspect
+    puts "=="*10
+
+    @apps.delete_if{|app1| @register_apps.index{|app2| app2.name == app1[:name]}}
   end
 
   def show
