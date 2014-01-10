@@ -2,15 +2,27 @@
 <% provide(:title,@app.name) %>
 
 <div class="row">
+  <% service_info = get_info %>
+  <% funcitons = service_info["function"]%>
   <aside class="span4">
     <section>
       <h1>
         <%= @app.name %>
       </h1>
     </section>
+    <section>
+      this servie have <%= funcitons.size %> functions
+    </section>
   </aside>
   <div class="span8">
-
+    <h2>方法描述</h2>
+    <% for i in (0...funcitons.size) %>
+      <ol class="microposts">
+        <li>
+          <%= render partial:'service_function', locals: {function:funcitons[i]} %>
+        </li>
+      </ol>
+    <% end %>
   </div>
 
 </div>
