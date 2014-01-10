@@ -43,9 +43,7 @@ class App < ActiveRecord::Base
 
   def push
     puts "="*10+"push"+"="*10
-    push_path  = Rails.root.join('public', 'data', path.original_filename).to_s
-    puts "push_path=#{push_path}"
-    push_path = push_path.split(".")[0]
+    push_path  = path
     puts "push_path=#{push_path}"
 
     host = domain.split(".").shift

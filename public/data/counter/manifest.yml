@@ -1,0 +1,8 @@
+---
+applications:
+- name: counter
+  memory: 256M
+  instances: 1
+  host: counter
+  domain: dc.escience.cn
+  path: .

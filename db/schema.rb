@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131230060128) do
+ActiveRecord::Schema.define(:version => 20140110030944) do
 
   create_table "apps", :force => true do |t|
     t.string   "path"
@@ -19,9 +19,10 @@ ActiveRecord::Schema.define(:version => 20131230060128) do
     t.integer  "instance"
     t.string   "memory_limit"
     t.string   "domain"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
     t.string   "status"
+    t.string   "service_file_path"
   end
 
   add_index "apps", ["domain"], :name => "index_apps_on_domain", :unique => true

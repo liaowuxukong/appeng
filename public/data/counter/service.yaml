@@ -1,0 +1,31 @@
+---
+appname: counter
+category: counter
+function:
+- name: create
+  params: counter,create,counters,"counter_name",{"name"=>"counter_name"}
+  info: 函数作用为创建计数器，参数counter,create,counters为固定参数，counter_name为string字符串，表明创建的计数器名字，{"name"=>"counter_name"}为一个hash，name表示后的counter_name为创建的字符串名字
+  return: 返回为json格式，如果创建失败返回如下结果{"status":"fail","info":"exist"}，如果创建成功返回如下结果，{"status":"success","value":{"hello1":0}}
+  example: 创建名为"hello"的计数器，apibus.get_service(:counter,:create,:counters,"hello",{name:"hello"})
+- name: show all counters
+  params: counter,index,counters
+  info: 显示所有已经存在的计数器。参数counter,index,counters为固定参数
+  return: 返回为json格式，例如：{"status":"success","value":{"hello":11,"test_counter":110}}
+  example: apibus.get_service(:counter,:index,:counters)
+- name: show one counter
+  params: counter,show,counters,"counter_name"
+  info: 显示某个计数器的值。参数counter,show,counters为固定参数,"counter_name"为需要显示的计数器名称
+  return: 返回为json格式，调用成功返回{"status":"success","value":{"counter_name":0}}，失败返回{"status":"fail","info":"counter
+    name error"}
+  example: apibus.get_service(:counter,:show,:counters,"counter_name")
+- name: update counter
+  params: counter,update,counters,"counter_name",{"value"=>"new_value"}
+  info: 更新某个计数器，前三个固定，counter_name为要更新的计数器的名称，在hash中设置值，如果不设置，默认为计数器加1
+  return: 返回为json格式，调用成功返回{"status":"success","value":{"counter_name":"12"}}，失败返回{{"status":"fail","info":"counter
+    name error"}
+  example: apibus.get_service(:counter,:update,:counters,"counter_name")
+- name: delete_fun
+  params: counter,update,counters,"counter_name"
+  info: 删除某个计数器，前三个固定，counter_name为要更新的计数器的名称
+  return: 返回为json格式，调用成功返回{"status":"success"}，失败返回{{"status":"fail","info":"counter name error"}
+  example: apibus.get_service(:counter,:delete,:counters,"counter_name")
