@@ -23,7 +23,7 @@ class AppsController < ApplicationController
     status,app_infos = CF::App::Apps.new.apps
     @apps = app_infos
     apps_from_db = App.all
-    @register_apps = apps_from_db.dup
+    @register_apps = apps_from_db.dup.delete_if{|app| app.service_file_path==nil}
     puts "=="*10
     @register_apps.map do |app1|
       status = @apps[@apps.index{|app2| app1.name == app2[:name]}][:status]
@@ -45,7 +45,7 @@ class AppsController < ApplicationController
     # 上传  && 上传cf
     if upload && @app.push && @app.save 
       flash[:success] = "create app success!"
-      redirect_to @app
+      redirect_to @apps
     else
       flash[:error] = "some thing is wrong!"
       render 'new'      

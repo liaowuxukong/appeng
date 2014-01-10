@@ -1,0 +1,8 @@
+---
+applications:
+- name: counterinvoke
+  memory: 256M
+  instances: 1
+  host: counterinvoke
+  domain: dc.escience.cn
+  path: .
