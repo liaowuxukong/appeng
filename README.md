@@ -1,1 +1,2 @@
-This is a sample application.
+这个东西就是我的比设啊。。。
+求给力，求毕业
