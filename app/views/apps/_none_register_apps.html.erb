@@ -2,7 +2,7 @@
 <% @apps.each do |app| %>
   <ol class="microposts">
     <li>
-      <span><%=app[:name]%></span>
+      <span><b><%=app[:name]%></b></span>
       <span >
         <% if app[:status]=="running" %>
           <font color="green">running</font>
@@ -19,6 +19,10 @@
       <div class="timestamp">
         urls: <a href="http://<%=app[:domain]%>" target="_blank"><%=app[:domain]%></a>
       <div>
+      <div>
+      <%= link_to "delete", app_path(app[:name]), 
+            method: :delete, data: { confirm: 'You sure?' } %>
+      </div>
     </li>
   </ol>
 <% end %>

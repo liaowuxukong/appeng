@@ -10,7 +10,7 @@ class APIBus
   def get_service(name,action,resource,id='',params={})
     #domain = @service_uris[name.to_sym] || @service_uris[name.to_s]
     #puts "domain = #{domain}"
-    domain = "http://counter.dc.escience.cn"
+    domain = "http://localhost:4567"
     action = action.to_sym
     resource = resource.to_sym
     trans_method = 
@@ -56,5 +56,5 @@ end
 
 apibus = APIBus.new
 #puts apibus.get_service("",:create,:counters,"hello",{name:"hello"})
-puts apibus.get_service(:counter,:delete,:counters,"hello1")
+puts apibus.get_service("",:update,:counters,"hello")
 

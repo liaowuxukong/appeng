@@ -2,7 +2,7 @@
 <% @register_apps.each do |app| %>
   <ol class="microposts">
     <li>
-      <span><%=link_to app[:name],app%></span>
+      <span><b><%=link_to app[:name],app%></b></span>
       <span >
         <% if app[:status]=="running" %>
           <font color="green">running</font>
@@ -19,6 +19,9 @@
       <div class="timestamp">
         urls: <a href="http://<%=app[:domain]%>" target="_blank"><%=app[:domain]%></a>
       <div>
+      <div>
+        delete
+      </div>
     </li>
   </ol>
 <% end %>

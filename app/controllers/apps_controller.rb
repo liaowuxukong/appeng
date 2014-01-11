@@ -45,11 +45,17 @@ class AppsController < ApplicationController
     # 上传  && 上传cf
     if upload && @app.push && @app.save 
       flash[:success] = "create app success!"
-      redirect_to @apps
+      redirect_to apps_path
     else
       flash[:error] = "some thing is wrong!"
       render 'new'      
     end
+  end
+
+  def destroy
+    app_name = params[:id]
+    
+    redirect_to apps_path
   end
 
   private
