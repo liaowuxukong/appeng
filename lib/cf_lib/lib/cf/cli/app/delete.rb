@@ -15,7 +15,57 @@ module CF::App
     input :all, :desc => "Delete all applications", :default => false
     input :really, :type => :boolean, :forget => true, :hidden => true,
           :default => proc { force? || interact }
-    def delete
+
+  
+    def delete(name,all=nil)
+      apps = client.apps
+      to_delete = []
+      to_delete << client.send(:"app_by_name", name)
+        puts "to_delete = #{to_delete}, #{to_delete.class}"
+      all_services = apps.collect(&:services).flatten
+        puts "all_services = #{all_services},#{all_services.class}"
+      deleted_app_services = []
+      spaced(to_delete) do |app|
+
+        deleted_app_services += app.services
+
+        app.routes.collect(&:delete!) if false
+        app.delete!
+      end
+
+      delete_orphaned_services(
+        find_orphaned_services(deleted_app_services, all_services))
+
+      to_delete
+    end
+   
+
+    def find_orphaned_services(deleted, all)
+      orphaned = []
+
+      leftover = all.dup
+      deleted.each do |svc|
+        leftover.slice!(leftover.index(svc))
+        orphaned << svc unless leftover.include?(svc)
+      end
+
+      # clear out the relationships as the apps are now deleted
+      orphaned.each(&:invalidate!)
+    end
+
+    def delete_orphaned_services(orphans)
+      return if orphans.empty?
+
+      line unless quiet? || force?
+
+      orphans.select { |o| input[:delete_orphaned, o] }.each do |service|
+        # TODO: splat
+        invoke :delete_service, :service => service, :really => true
+      end
+    end
+
+
+    def delete1
       apps = client.apps
 
       if input[:all]
@@ -49,29 +99,10 @@ module CF::App
       to_delete
     end
 
-    def find_orphaned_services(deleted, all)
-      orphaned = []
 
-      leftover = all.dup
-      deleted.each do |svc|
-        leftover.slice!(leftover.index(svc))
-        orphaned << svc unless leftover.include?(svc)
-      end
 
-      # clear out the relationships as the apps are now deleted
-      orphaned.each(&:invalidate!)
-    end
 
-    def delete_orphaned_services(orphans)
-      return if orphans.empty?
 
-      line unless quiet? || force?
-
-      orphans.select { |o| input[:delete_orphaned, o] }.each do |service|
-        # TODO: splat
-        invoke :delete_service, :service => service, :really => true
-      end
-    end
 
     private
 

@@ -53,8 +53,16 @@ class AppsController < ApplicationController
   end
 
   def destroy
+    print "="*10
+    print 'destroy'
+    puts "="*10
     app_name = params[:id]
-    
+
+    if delete_app = App.find_by_name(app_name)
+      delete_app.destroy 
+    end
+    CF::App::Delete.new.delete(app_name)
+    puts "=="*10
     redirect_to apps_path
   end
 

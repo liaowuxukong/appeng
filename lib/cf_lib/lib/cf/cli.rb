@@ -457,7 +457,7 @@ EOS
         @@client = c
       end
 
-      private
+      
 
       def find_by_name(display, &blk)
         proc { |name, *args|

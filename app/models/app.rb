@@ -11,20 +11,18 @@
 #  created_at   :datetime        not null
 #  updated_at   :datetime        not null
 #
-libdir = File.expand_path(File.join(File.dirname(__FILE__), "../../lib"))
 
+=begin
+libdir = File.expand_path(File.join(File.dirname(__FILE__), "../../lib"))
 mothershiplibdir = "#{libdir}/mothership/lib"
 $LOAD_PATH.unshift(mothershiplibdir) unless $LOAD_PATH.include?(mothershiplibdir)
 cfliddir = "#{libdir}/cf_lib/lib"
 $LOAD_PATH.unshift(cfliddir) unless $LOAD_PATH.include?(cfliddir)
-
-
 require "cf"
 require "cf/plugin"
-
 $stdout.sync = true
-
 CF::Plugin.load_all
+=end
 
 class App < ActiveRecord::Base
   attr_accessible :domain, :instance, :memory_limit, :name, :path, :status
@@ -63,6 +61,10 @@ class App < ActiveRecord::Base
     puts "="*10+"push"+"="*10
     true
 
+  end
+
+  def delete
+    #CF::App::Delete.new.delete()
   end
   
 
