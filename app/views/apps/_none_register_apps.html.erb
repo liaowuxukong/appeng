@@ -2,8 +2,8 @@
 <% @apps.each do |app| %>
   <ol class="microposts">
     <li>
-      <span><b><%=app[:name]%></b></span>
-      <span >
+      <h3><b><%=app[:name]%></b></h3>
+      <div >
         <% if app[:status]=="running" %>
           <font color="green">running</font>
         <%elsif app[:status]=="stop"%>
@@ -11,8 +11,8 @@
         <%else%>
           <font color="#EA7500"><%=app[:status]%></font>
         <%end%>
-      </span>
-      <br/>
+      </div>
+      
       <span class="timestamp">
         usage: <%=app[:memory_limit]%>*<%=app[:instance]%>
       </span>

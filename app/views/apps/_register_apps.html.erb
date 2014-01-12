@@ -2,8 +2,8 @@
 <% @register_apps.each do |app| %>
   <ol class="microposts">
     <li>
-      <span><b><%=link_to app[:name],app%></b></span>
-      <span >
+      <h3><b><%=link_to app[:name],app%></b></h3>
+      <div >
         <% if app[:status]=="running" %>
           <font color="green">running</font>
         <%elsif app[:status]=="stop"%>
@@ -11,8 +11,8 @@
         <%else%>
           <font color="#EA7500"><%=app[:status]%></font>
         <%end%>
-      </span>
-      <br/>
+      </div>
+      
       <span class="timestamp">
         usage: <%=app[:memory_limit]%>*<%=app[:instance]%>
       </span>
@@ -20,7 +20,8 @@
         urls: <a href="http://<%=app[:domain]%>" target="_blank"><%=app[:domain]%></a>
       <div>
       <div>
-        delete
+      <%= link_to "delete", app_path(app[:name]), 
+            method: :delete, data: { confirm: 'You sure?' } %>
       </div>
     </li>
   </ol>
