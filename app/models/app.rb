@@ -24,7 +24,10 @@ $stdout.sync = true
 CF::Plugin.load_all
 =end
 
+require "apps_helper"
+
 class App < ActiveRecord::Base
+  include AppsHelper
   attr_accessible :domain, :instance, :memory_limit, :name, :path, :status
 
 
@@ -47,8 +50,12 @@ class App < ActiveRecord::Base
     host = domain.split(".").shift
     last_domain = domain[host.length+1..-1]
 
+
     inputs = {name:name, path:push_path, instance: instance,
           memory: memory_limit, host: host, domain: last_domain}
+
+    @save_name = inputs[:name].to_s
+    @url = "http://"+inputs[:name].to_s+"."+inputs[:domain].to_s
 
     argv = "push --name=#{inputs[:name]} --path=#{inputs[:path]} --host=#{inputs[:host]} "+
            "--domain=#{inputs[:domain]} --memory=#{inputs[:memory]} "+
@@ -64,7 +71,15 @@ class App < ActiveRecord::Base
   end
 
   def delete
-    #CF::App::Delete.new.delete()
+    sql_query = "delete from name_url where name=\"#{name}\";"
+    exec_proc(sql_query,"delete success");
+  end
+
+  def save_to_database
+    
+    sql_query = "insert into name_url (name,url) values (\"#{@save_name}\",\"#{@url}\");"
+    result,msg = exec_proc(sql_query,"insert success")
+    result
   end
   
 

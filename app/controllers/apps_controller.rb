@@ -43,7 +43,7 @@ class AppsController < ApplicationController
     @app = App.new(params[:app])
     @app[:instance] = @app[:instance].to_s
     # 上传  && 上传cf
-    if upload && @app.push && @app.save 
+    if upload && @app.push && @app.save && @app.save_to_database
       flash[:success] = "create app success!"
       redirect_to apps_path
     else
@@ -59,7 +59,8 @@ class AppsController < ApplicationController
     app_name = params[:id]
 
     if delete_app = App.find_by_name(app_name)
-      delete_app.destroy 
+      delete_app.destroy
+      delete_app.delete 
     end
     CF::App::Delete.new.delete(app_name)
     puts "=="*10
@@ -163,5 +164,8 @@ class AppsController < ApplicationController
         File.delete(file_path)
       end
     end
+
+
+
 
 end

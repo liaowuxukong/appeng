@@ -1,0 +1,8 @@
+---
+appname: weather
+category: weather
+function:
+- name: 获取天气
+  params: weather,show,weathers,"city_code"
+  info: 参数weather,show,weathers为固定参数，city_code为string字符串
+  example: 获取北京天气，apibus.get_service(:weather,:show,:weather,"101010100")
