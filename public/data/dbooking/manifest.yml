@@ -1,0 +1,8 @@
+---
+applications:
+- name: dbooking
+  memory: 256M
+  instances: 1
+  host: dbooking
+  domain: dc.escience.cn
+  path: .
