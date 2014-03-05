@@ -1,38 +1,27 @@
-libdir = File.expand_path(File.join(File.dirname(__FILE__), "../../lib"))
-
-mothershiplibdir = "#{libdir}/mothership/lib"
-$LOAD_PATH.unshift(mothershiplibdir) unless $LOAD_PATH.include?(mothershiplibdir)
-cfliddir = "#{libdir}/cf_lib/lib"
-$LOAD_PATH.unshift(cfliddir) unless $LOAD_PATH.include?(cfliddir)
-
-
-require "cf"
-require "cf/plugin"
-
-$stdout.sync = true
-
-CF::Plugin.load_all
-
 
 class AppsController < ApplicationController
   def new
     @app = App.new
   end
 
+  # 将从cf中读取的app分为两个部分，注册过的和没有注册过的
   def index
-    status,app_infos = CF::App::Apps.new.apps
+    status,app_infos = App.get_apps_from_cf
     @apps = app_infos
     apps_from_db = App.all
+    # 数据库中保存的app，不全都是注册的，还有一个条件是需要service_map.yaml文件
     @register_apps = apps_from_db.dup.delete_if{|app| app.service_file_path==nil}
-    puts "=="*10
+
+    
+    # 数据库中没有保存app的status，需要结合apps_from_cf的结果标注
     @register_apps.map do |app1|
       status = @apps[@apps.index{|app2| app1.name == app2[:name]}][:status]
       app1.status = status
     end
-    puts @register_apps.inspect
-    puts "=="*10
-
+    
+    # 删除注册过的app
     @apps.delete_if{|app1| @register_apps.index{|app2| app2.name == app1[:name]}}
+
   end
 
   def show
@@ -42,7 +31,11 @@ class AppsController < ApplicationController
   def create
     @app = App.new(params[:app])
     @app[:instance] = @app[:instance].to_s
-    # 上传  && 上传cf
+    
+    # tar包上传到服务器
+    # 解压tar包，并上传cf
+    # 将资料保存数据库
+    # 将注册域名保存10.10.1.159数据库 
     if upload && @app.push && @app.save && @app.save_to_database
       flash[:success] = "create app success!"
       redirect_to apps_path
@@ -53,17 +46,14 @@ class AppsController < ApplicationController
   end
 
   def destroy
-    print "="*10
-    print 'destroy'
-    puts "="*10
+
     app_name = params[:id]
 
     if delete_app = App.find_by_name(app_name)
       delete_app.destroy
-      delete_app.delete 
+      delete_app.delete(app_name)
     end
-    CF::App::Delete.new.delete(app_name)
-    puts "=="*10
+    
     redirect_to apps_path
   end
 

@@ -23,6 +23,22 @@ require "cf/plugin"
 $stdout.sync = true
 CF::Plugin.load_all
 =end
+libdir = File.expand_path(File.join(File.dirname(__FILE__), "../../lib"))
+
+mothershiplibdir = "#{libdir}/mothership/lib"
+$LOAD_PATH.unshift(mothershiplibdir) unless $LOAD_PATH.include?(mothershiplibdir)
+cfliddir = "#{libdir}/cf_lib/lib"
+$LOAD_PATH.unshift(cfliddir) unless $LOAD_PATH.include?(cfliddir)
+
+
+require "cf"
+require "cf/plugin"
+
+$stdout.sync = true
+
+CF::Plugin.load_all
+
+
 
 require "apps_helper"
 
@@ -70,9 +86,11 @@ class App < ActiveRecord::Base
 
   end
 
-  def delete
-    sql_query = "delete from name_url where name=\"#{name}\";"
+  def delete(app_name)
+    sql_query = "delete from name_url where name=\"#{app_name}\";"
     exec_proc(sql_query,"delete success");
+
+    CF::App::Delete.new.delete(app_name)
   end
 
   def save_to_database
@@ -80,6 +98,12 @@ class App < ActiveRecord::Base
     sql_query = "insert into name_url (name,url) values (\"#{@save_name}\",\"#{@url}\");"
     result,msg = exec_proc(sql_query,"insert success")
     result
+  end
+
+  class << self
+    def get_apps_from_cf
+      CF::App::Apps.new.apps
+    end
   end
   
 
